@@ -73,5 +73,7 @@ describe("All", async () => {
 			],
 			{ account: viewer2.account },
 		);
+		const balance = await like.read.balanceOf([operation.account.address]);
+		assert.equal(balance, 75n);
 	});
 });

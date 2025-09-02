@@ -15,6 +15,7 @@ contract Review is ERC721URIStorage {
     }
 
     function mint(uint256 bookId, string memory reviewURI) external {
+        require(_book.ownerOf(bookId) != address(0), "Book does not exist");
         uint256 reviewId = uint256(
             keccak256(abi.encodePacked(msg.sender, bookId))
         );
