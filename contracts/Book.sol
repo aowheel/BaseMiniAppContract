@@ -9,9 +9,12 @@ contract Book is ERC721URIStorage {
 
     constructor() ERC721("BookToken", "BOOK") ERC721URIStorage() {}
 
+    event BookMinted(address to, uint256 bookId, string bookURI);
+
     function mint(address to, string memory bookURI) external {
         uint256 bookId = _nextBookId++;
         _mint(to, bookId);
         _setTokenURI(bookId, bookURI);
+        emit BookMinted(to, bookId, bookURI);
     }
 }

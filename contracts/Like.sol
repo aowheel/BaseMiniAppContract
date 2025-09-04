@@ -24,11 +24,18 @@ contract Like is ERC20 {
         _mint(to, amount);
     }
 
+    event LikeDistributed(
+        address from,
+        uint256 bookId,
+        uint256 reviewId,
+        uint256 amount
+    );
+
     function distribute(
         uint256 bookId,
         uint256 reviewId,
         uint256 amount
-    ) external {
+    ) public {
         address bookOwner = _book.ownerOf(bookId);
         require(bookOwner != address(0), "Book does not exist");
         address reviewOwner = _review.ownerOf(reviewId);
@@ -37,5 +44,21 @@ contract Like is ERC20 {
         uint256 reviewShare = amount - bookShare;
         _transfer(msg.sender, bookOwner, bookShare);
         _transfer(msg.sender, reviewOwner, reviewShare);
+        emit LikeDistributed(msg.sender, bookId, reviewId, amount);
+    }
+
+    function batchDistribute(
+        uint256[] calldata bookIds,
+        uint256[] calldata reviewIds,
+        uint256[] calldata amounts
+    ) external {
+        require(
+            bookIds.length == reviewIds.length &&
+                bookIds.length == amounts.length,
+            "Array length mismatch"
+        );
+        for (uint256 i = 0; i < bookIds.length; i++) {
+            distribute(bookIds[i], reviewIds[i], amounts[i]);
+        }
     }
 }

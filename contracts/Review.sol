@@ -14,6 +14,13 @@ contract Review is ERC721URIStorage {
         _book = Book(bookAddress);
     }
 
+    event ReviewMinted(
+        address to,
+        uint256 bookId,
+        uint256 reviewId,
+        string reviewURI
+    );
+
     function mint(uint256 bookId, string memory reviewURI) external {
         require(_book.ownerOf(bookId) != address(0), "Book does not exist");
         uint256 reviewId = uint256(
@@ -21,6 +28,7 @@ contract Review is ERC721URIStorage {
         );
         _mint(msg.sender, reviewId);
         _setTokenURI(reviewId, reviewURI);
+        emit ReviewMinted(msg.sender, bookId, reviewId, reviewURI);
     }
 
     function setBookURI(uint256 bookId, string memory bookURI) external {
